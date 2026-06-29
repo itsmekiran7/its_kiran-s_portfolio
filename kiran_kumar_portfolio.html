@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>M Kiran Kumar | Network Engineer Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Calibri:wght@400;700&display=swap');
+
+  /* ── Custom cursor ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none; }
+
+  #cursor {
+    width: 14px; height: 14px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.08s ease, background 0.2s;
+    box-shadow: 0 0 10px #aaa, 0 0 25px #555;
+  }
+  #cursor-ring {
+    width: 36px; height: 36px;
+    border: 2px solid rgba(200,200,200,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: width 0.3s, height 0.3s, transform 0.15s ease, border-color 0.2s;
+  }
+  body:has(a:hover) #cursor, body:has(button:hover) #cursor { transform: translate(-50%,-50%) scale(2.5); background: #fff; }
+  body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 60px; height: 60px; border-color: rgba(255,255,255,0.8); }
+
+  /* ── Base ── */
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Calibri', Calibri, sans-serif;
+    background: #0a0a0a;
+    color: #d4d4d4;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated network background ── */
+  #bg-canvas {
+    position: fixed; inset: 0;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #2a2a2a;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+  }
+  .nav-logo {
+    font-size: 1.3rem; font-weight: 700; color: #fff;
+    letter-spacing: 0.08em;
+  }
+  .nav-logo span { color: #888; }
+  nav ul { list-style: none; display: flex; gap: 32px; }
+  nav ul li a {
+    color: #999; text-decoration: none; font-size: 0.95rem;
+    letter-spacing: 0.05em; cursor: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  nav ul li a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px; background: #fff;
+    transition: width 0.3s;
+  }
+  nav ul li a:hover { color: #fff; }
+  nav ul li a:hover::after { width: 100%; }
+
+  /* ── Sections common ── */
+  section {
+    position: relative; z-index: 1;
+    padding: 100px 10vw;
+  }
+
+  /* ── Hero ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding-top: 120px;
+  }
+  .hero-tag {
+    font-size: 0.8rem; letter-spacing: 0.25em; color: #666;
+    text-transform: uppercase; margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+  }
+  .hero-name {
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 700; color: #ffffff;
+    line-height: 1.05; letter-spacing: -0.02em;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-name .gray { color: #555; }
+  .hero-title {
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    color: #777; margin-top: 16px;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-objective {
+    max-width: 580px; margin-top: 24px;
+    color: #666; line-height: 1.7; font-size: 1rem;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .hero-btns {
+    display: flex; gap: 16px; margin-top: 40px;
+    opacity: 0; animation: fadeUp 0.8s 1s forwards;
+  }
+  .btn {
+    padding: 12px 28px; border-radius: 2px; font-family: Calibri, sans-serif;
+    font-size: 0.9rem; letter-spacing: 0.06em; cursor: none;
+    text-decoration: none; transition: all 0.25s;
+  }
+  .btn-primary {
+    background: #fff; color: #111; border: 1px solid #fff;
+  }
+  .btn-primary:hover { background: transparent; color: #fff; }
+  .btn-outline {
+    background: transparent; color: #aaa; border: 1px solid #333;
+  }
+  .btn-outline:hover { border-color: #aaa; color: #fff; }
+
+  /* ── Section headings ── */
+  .sec-label {
+    font-size: 0.75rem; letter-spacing: 0.3em; color: #555;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .sec-title {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 700; color: #fff; margin-bottom: 48px;
+    position: relative; display: inline-block;
+  }
+  .sec-title::after {
+    content: ''; display: block; height: 2px; width: 48px;
+    background: #444; margin-top: 10px;
+  }
+
+  /* ── About / Skills ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  @media(max-width:768px){ .two-col { grid-template-columns: 1fr; } }
+
+  .about-text p { color: #888; line-height: 1.75; margin-bottom: 16px; }
+  .about-text strong { color: #ccc; }
+
+  /* ── Skill pills ── */
+  .skill-group { margin-bottom: 28px; }
+  .skill-group h4 { color: #aaa; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    padding: 6px 14px; border: 1px solid #2a2a2a;
+    border-radius: 2px; font-size: 0.82rem; color: #999;
+    background: rgba(255,255,255,0.03);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .pill:hover { border-color: #666; color: #fff; }
+
+  /* ── Timeline / Education ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 6px; bottom: 6px;
+    width: 1px; background: #222;
+  }
+  .tl-item { position: relative; margin-bottom: 36px; }
+  .tl-item::before {
+    content: ''; position: absolute; left: -32px; top: 6px;
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1px solid #555; background: #111;
+  }
+  .tl-year { font-size: 0.75rem; color: #555; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .tl-school { font-size: 1rem; font-weight: 700; color: #ccc; }
+  .tl-degree { font-size: 0.9rem; color: #777; margin-top: 2px; }
+  .tl-cgpa { font-size: 0.8rem; color: #555; margin-top: 4px; }
+
+  /* ── Projects ── */
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media(max-width:768px){ .projects-grid { grid-template-columns: 1fr; } }
+
+  .project-card {
+    border: 1px solid #1e1e1e;
+    background: rgba(255,255,255,0.02);
+    padding: 32px 28px; border-radius: 2px;
+    transition: border-color 0.3s, transform 0.3s, background 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .project-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .project-card:hover { border-color: #3a3a3a; transform: translateY(-4px); background: rgba(255,255,255,0.04); }
+  .project-card:hover::before { opacity: 1; }
+  .project-num { font-size: 2rem; font-weight: 700; color: #1e1e1e; margin-bottom: 12px; }
+  .project-title { font-size: 1.05rem; font-weight: 700; color: #ccc; margin-bottom: 12px; }
+  .project-desc { font-size: 0.88rem; color: #666; line-height: 1.7; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .project-tag { font-size: 0.72rem; padding: 3px 10px; border: 1px solid #2a2a2a; color: #666; border-radius: 2px; }
+
+  /* ── Cert ── */
+  .cert-card {
+    border: 1px solid #1e1e1e;
+    background: rgba(255,255,255,0.02);
+    padding: 28px 32px; border-radius: 2px;
+    display: flex; align-items: center; gap: 24px;
+    max-width: 620px;
+    transition: border-color 0.3s;
+  }
+  .cert-card:hover { border-color: #444; }
+  .cert-icon { font-size: 2.4rem; flex-shrink: 0; }
+  .cert-body h3 { color: #ccc; font-size: 1rem; margin-bottom: 6px; }
+  .cert-body p { color: #666; font-size: 0.85rem; line-height: 1.6; }
+
+  /* ── Contact ── */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 640px; }
+  .contact-item {
+    border: 1px solid #1e1e1e; padding: 20px 24px; border-radius: 2px;
+    display: flex; flex-direction: column; gap: 6px;
+    background: rgba(255,255,255,0.02);
+    transition: border-color 0.3s;
+  }
+  .contact-item:hover { border-color: #444; }
+  .contact-label { font-size: 0.7rem; letter-spacing: 0.2em; color: #555; text-transform: uppercase; }
+  .contact-value { font-size: 0.9rem; color: #bbb; }
+  .contact-value a { color: #bbb; text-decoration: none; cursor: none; }
+  .contact-value a:hover { color: #fff; }
+
+  /* ── Footer ── */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 32px;
+    border-top: 1px solid #1a1a1a;
+    color: #333; font-size: 0.8rem;
+  }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid #1a1a1a; margin: 0 10vw; position: relative; z-index: 1; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media(prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Animated network background -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-logo">MKK <span>//</span></div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <p class="hero-tag">Network Engineer &amp; CCNA Certified</p>
+  <h1 class="hero-name">M Kiran<br><span class="gray">Kumar</span></h1>
+  <p class="hero-title">Cisco Routing · Switching · GNS3 · Wireshark</p>
+  <p class="hero-objective">
+    Seeking a challenging networking role where I can apply my expertise in TCP/IP, OSPF, BGP, VLANs, and network simulation to drive continuous improvement and organisational growth.
+  </p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="#contact" class="btn btn-outline">Get in Touch</a>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ── About + Skills ── -->
+<section id="about">
+  <p class="sec-label reveal">Profile</p>
+  <h2 class="sec-title reveal">About Me</h2>
+  <div class="two-col">
+    <div class="about-text reveal">
+      <p>I'm a <strong>Computer Science Engineering graduate</strong> (Rayalaseema University, CGPA 8.14) with a deep focus on networking. My hands-on experience spans configuring <strong>Cisco 7200 Routers</strong>, Layer 2/3 switches, and building complex topologies in GNS3 and Packet Tracer.</p>
+      <p>I understand networking at every layer — from physical frames to BGP route redistribution — and I'm comfortable diagnosing issues with Wireshark, ping, traceroute, and netstat in Linux environments.</p>
+      <p>Languages I communicate in: <strong>English, Telugu, Hindi.</strong></p>
+    </div>
+    <div class="reveal" id="skills">
+      <div class="skill-group">
+        <h4>Protocols &amp; Models</h4>
+        <div class="pills">
+          <span class="pill">OSI Model</span><span class="pill">TCP/IP</span>
+          <span class="pill">IPv4 / IPv6</span><span class="pill">ARP</span>
+          <span class="pill">ICMP</span><span class="pill">DHCP</span><span class="pill">DNS</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Routing</h4>
+        <div class="pills">
+          <span class="pill">Static Routing</span><span class="pill">Default Routing</span>
+          <span class="pill">OSPF</span><span class="pill">EIGRP</span><span class="pill">BGP</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Switching</h4>
+        <div class="pills">
+          <span class="pill">VLAN</span><span class="pill">Inter-VLAN</span>
+          <span class="pill">STP / RSTP</span><span class="pill">VTP</span>
+          <span class="pill">Trunking</span><span class="pill">Port Channel</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Tools &amp; Platforms</h4>
+        <div class="pills">
+          <span class="pill">GNS3</span><span class="pill">Cisco Packet Tracer</span>
+          <span class="pill">Wireshark</span><span class="pill">Zabbix</span>
+          <span class="pill">Linux CLI</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Network Technologies</h4>
+        <div class="pills">
+          <span class="pill">NAT</span><span class="pill">IPSec VPN</span><span class="pill">VRRP</span>
+          <span class="pill">Subnetting</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Soft Skills</h4>
+        <div class="pills">
+          <span class="pill">Problem-Solving</span><span class="pill">Critical Thinking</span>
+          <span class="pill">Troubleshooting</span><span class="pill">Team Collaboration</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ── Projects ── -->
+<section id="projects">
+  <p class="sec-label reveal">Work</p>
+  <h2 class="sec-title reveal">Networking Projects</h2>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-num">01</div>
+      <div class="project-title">Static &amp; Default Routing — SBI Branch</div>
+      <div class="project-desc">
+        Designed and simulated a branch office network for SBI Bank using GNS3. Built a logical topology with IP addressing, subnetting, VLAN segmentation, and configured static and default routing between branch subnets and the central data centre. Verified connectivity via ping and ICMP tools.
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">GNS3</span>
+        <span class="project-tag">Static Routing</span>
+        <span class="project-tag">VLAN</span>
+        <span class="project-tag">ICMP</span>
+        <span class="project-tag">Subnetting</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-num">02</div>
+      <div class="project-title">Multi-Area OSPF &amp; BGP Integration</div>
+      <div class="project-desc">
+        Designed an enterprise-style routing topology integrating OSPF multi-area architecture (Area 0 backbone + Area 10) and BGP. Verified LSA exchanges (Hello, DBD, LSR, LSU, LSAck), implemented DHCP for dynamic IP allocation, performed OSPF ↔ BGP route redistribution, and optimised overall network performance.
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">OSPF</span>
+        <span class="project-tag">BGP</span>
+        <span class="project-tag">GNS3</span>
+        <span class="project-tag">DHCP</span>
+        <span class="project-tag">Wireshark</span>
+        <span class="project-tag">Cisco Packet Tracer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ── Education ── -->
+<section id="education">
+  <p class="sec-label reveal">Background</p>
+  <h2 class="sec-title reveal">Education</h2>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-year">2021 – 2025</div>
+      <div class="tl-school">Rayalaseema University College of Engineering, Kurnool</div>
+      <div class="tl-degree">B.Tech — Computer Science &amp; Engineering</div>
+      <div class="tl-cgpa">CGPA 8.14</div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2018 – 2020</div>
+      <div class="tl-school">Deeksha Junior College, Yemmiganur</div>
+      <div class="tl-degree">Intermediate — MPC</div>
+      <div class="tl-cgpa">CGPA 5.78</div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2018</div>
+      <div class="tl-school">Nalanda High School, Yemmiganur</div>
+      <div class="tl-degree">Secondary School Education</div>
+      <div class="tl-cgpa">CGPA 8.7</div>
+    </div>
+  </div>
+
+  <!-- Certification -->
+  <div style="margin-top:56px;">
+    <p class="sec-label reveal">Certification</p>
+    <div class="cert-card reveal">
+      <div class="cert-icon">🏅</div>
+      <div class="cert-body">
+        <h3>Cisco Certified Network Associate (CCNA)</h3>
+        <p>Issued by Tungabhadra Network · 2026<br>
+        Hands-on experience with Cisco routers, switches, VLANs, OSPF, EIGRP, and network troubleshooting using Packet Tracer and GNS3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ── Contact ── -->
+<section id="contact">
+  <p class="sec-label reveal">Get In Touch</p>
+  <h2 class="sec-title reveal">Contact</h2>
+  <div class="contact-grid">
+    <div class="contact-item reveal">
+      <span class="contact-label">Phone</span>
+      <span class="contact-value">+91 8106355649</span>
+    </div>
+    <div class="contact-item reveal">
+      <span class="contact-label">Email</span>
+      <span class="contact-value"><a href="mailto:kirankumar74102@gmail.com">kirankumar74102@gmail.com</a></span>
+    </div>
+    <div class="contact-item reveal">
+      <span class="contact-label">LinkedIn</span>
+      <span class="contact-value"><a href="https://linkedin.com/in/kirankumar161" target="_blank">kirankumar161</a></span>
+    </div>
+    <div class="contact-item reveal">
+      <span class="contact-label">Location</span>
+      <span class="contact-value">21/4/34/B., Adoni, Kurnool</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 M Kiran Kumar &mdash; Network Engineer
+</footer>
+
+<script>
+/* ── Custom cursor tracking ── */
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
+(function animRing(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+
+/* ── Animated network canvas ── */
+const canvas = document.getElementById('bg-canvas');
+const ctx    = canvas.getContext('2d');
+let W, H, nodes=[];
+
+function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+const NODE_COUNT = 60;
+class Node {
+  constructor(){
+    this.x=Math.random()*W; this.y=Math.random()*H;
+    this.vx=(Math.random()-0.5)*0.4; this.vy=(Math.random()-0.5)*0.4;
+    this.r=Math.random()*2+1;
+  }
+  move(){ this.x+=this.vx; this.y+=this.vy;
+    if(this.x<0||this.x>W) this.vx*=-1;
+    if(this.y<0||this.y>H) this.vy*=-1; }
+}
+for(let i=0;i<NODE_COUNT;i++) nodes.push(new Node());
+
+function drawNetwork(){
+  ctx.clearRect(0,0,W,H);
+  // draw edges
+  for(let i=0;i<nodes.length;i++){
+    for(let j=i+1;j<nodes.length;j++){
+      const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<140){
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x,nodes[i].y);
+        ctx.lineTo(nodes[j].x,nodes[j].y);
+        ctx.strokeStyle=`rgba(120,120,120,${(1-d/140)*0.5})`;
+        ctx.lineWidth=0.6;
+        ctx.stroke();
+      }
+    }
+  }
+  // draw nodes
+  nodes.forEach(n=>{
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(160,160,160,0.7)';
+    ctx.fill();
+    n.move();
+  });
+  requestAnimationFrame(drawNetwork);
+}
+drawNetwork();
+
+/* ── Scroll reveal ── */
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+},{threshold:0.12});
+reveals.forEach(el=>io.observe(el));
+
+/* ── Zoom-in effect on scroll (cursor zoom illusion) ── */
+window.addEventListener('scroll',()=>{
+  const st=window.scrollY;
+  document.querySelectorAll('.project-card').forEach((el,i)=>{
+    const rect=el.getBoundingClientRect();
+    const inView=rect.top<window.innerHeight&&rect.bottom>0;
+    if(inView){ el.style.transform=`translateY(-4px) scale(${1+Math.max(0,(0.5-(rect.top/window.innerHeight))*0.02)})`; }
+    else { el.style.transform=''; }
+  });
+});
+</script>
+</body>
+</html>
